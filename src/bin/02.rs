@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 advent_of_code::solution!(2);
 
 fn read_file_to_int_slices(input: &str) -> Vec<Vec<i32>> {
@@ -20,14 +18,17 @@ fn in_range(i: i32, j: i32) -> bool {
 }
 
 fn line_safe(line: &Vec<i32>) -> bool {
-    let mut dirCount = HashMap::from([(true, 0),(false,0)]);
+    let ascending = line[0] < line[1];
     for w in line.windows(2) {
         if !in_range(w[0], w[1]) {
             return false;
         }
-        *dirCount.entry(w[1] > w[0]).or_insert(0) += 1;
+        if (ascending && w[1] < w[0]) ||
+            (!ascending && w[1] > w[0]) {
+            return false;
+        }
     }
-    !(dirCount.values().all(|&v| v > 0))
+    true
 }
 
 fn permissive_line_safe(line: &Vec<i32>) -> bool {
